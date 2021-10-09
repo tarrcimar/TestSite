@@ -10,7 +10,7 @@ public class Message {
     @GeneratedValue
     private Long id;
 
-    @Basic
+
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
