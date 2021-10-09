@@ -2,14 +2,13 @@ package com.thesis.testsite.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Table(name = "users")
 @Entity
 public class User {
 
+    private static final String ROLE_USER = "USER";
 
     @Id
     @GeneratedValue
@@ -21,14 +20,21 @@ public class User {
     @Column(nullable = false, unique = true)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    private String role;
+    private String role = ROLE_USER;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Message> messages;
+
+    public User(String username, String password, List<Message> messages) {
+        this.username = username;
+        this.password = password;
+        this.messages = messages;
+    }
+
+    public User() {
+
+    }
 
     public void addMessages(String message){
         if(this.messages == null || this.messages.isEmpty())
@@ -60,20 +66,8 @@ public class User {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getRole() {
         return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public List<Message> getMessages() {
