@@ -44,7 +44,7 @@
             <div style="height: auto; background-color: white;" class="form-group">
                 <div th:each = "message: ${messages}" name="chatActivity" id="screen" style="border-color: rgb(0,123,255);background-color: white; resize: none; height: auto; margin-top: 1rem; margin-bottom: 1rem" class="form-control">
                     <h5 th:text="${message.user.username}" style="color: blue"></h5>
-                    <small th:text = "${message.content}"></small>
+                    <small th:utext = "${message.content}"></small>
                     <div sec:authorize = "hasAuthority('ADMIN')"><a style="color:red;" th:href="@{/deleteMessage/{messageId}(messageId = ${message.id})}">Delete Message</a></div>
                 </div>
             </div>

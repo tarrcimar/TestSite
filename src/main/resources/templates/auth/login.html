@@ -8,8 +8,8 @@
 <body>
   <div layout:fragment="loginContent">
     <form name="login" th:action="@{/login}" method="post" style="margin: 10% auto 0;width: 20%; height: 20%; padding: 50px;" >
-      <div id="error" th:if="${param.error}" class="alert-warning">Wrong username or password</div>
-      <div th:if="${param.logout}" class="alert-success">Logged out succesfully</div>
+      <div id="error" th:if="${param.error}" class="alert alert-warning" role="alert">Wrong username or password</div>
+      <div th:if="${param.logout}" class="alert alert-success" role="alert">Logged out succesfully</div>
       <div class="mb-3">
         <label for="username" class="form-label"></label>
           <input type="text" id="username" name= "username" class="form-control" placeholder="Please enter your username" required="true"/>
