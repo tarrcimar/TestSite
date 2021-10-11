@@ -50,8 +50,8 @@
         <label for="repeatPassword" class="form-label">Repeat Password</label>
         <input type="password" id="repeatPassword" name="repeatPassword" class="form-control"></input>
     </div>
-    <div th:if="${(param.flag != null) and (param.flag[0] == 'false')}" class="alert-danger">Passwords do not match</div>
-    <div th:if="${(param.flag != null) and (param.flag[0] == 'true')}" class="alert-success">Password changed</div>
+    <div th:if="${(param.flag != null) and (param.flag[0] == 'false')}" class="alert alert-danger">Passwords do not match</div>
+    <div th:if="${(param.flag != null) and (param.flag[0] == 'true')}" class="alert alert-success">Password changed</div>
     <button type="submit" class="btn btn-danger">Change Password</button>
 </form>
 

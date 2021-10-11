@@ -1,6 +1,7 @@
 package com.thesis.testsite.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Table(name = "messages")
 @Entity
@@ -10,7 +11,7 @@ public class Message {
     @GeneratedValue
     private Long id;
 
-
+    //j@Pattern(regexp = "[a-zA-Z0-9 ]+")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
