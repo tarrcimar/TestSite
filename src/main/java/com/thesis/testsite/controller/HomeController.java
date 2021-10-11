@@ -9,17 +9,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
 @Controller
 public class HomeController {
-
 
     private UserService userService;
 
@@ -37,10 +35,31 @@ public class HomeController {
         return "index";
     }
 
-    @PostMapping("/msg")
+    @RequestMapping("/register")
+    public String register(){
+        return "register";
+    }
+
+    @RequestMapping(value = "/msg", method = {RequestMethod.POST, RequestMethod.GET})
     public String addMessage(@RequestParam("content") String content, Principal principal){
+        content = content.replaceAll("[^a-zA-Z0-9]", " ");
         userService.addNewMessage(principal.getName() ,content);
         return "redirect:/";
+    }
+
+    @PostMapping("/reg")
+    public String registerUser(@RequestParam("username") String username, @RequestParam("password") String password,
+                           @RequestParam("repeatPassword") String repeatPassword){
+        password = password.replaceAll("[^a-zA-Z0-9]", " ");
+        username = username.replaceAll("[^a-zA-Z0-9]", " ");
+        repeatPassword = repeatPassword.replaceAll("[^a-zA-Z0-9]", " ");
+        if(password.equals(repeatPassword)){
+            userService.registerUser(new User(username, password));
+            return "redirect:/register?flag=true";
+        }
+
+        return "redirect:/register?flag=false";
+
     }
 
 }

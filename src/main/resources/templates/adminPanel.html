@@ -14,7 +14,13 @@
                 <h1>TestSite</h1>
             </li>
             <li sec:authorize = "hasAuthority('ADMIN')" class="nav-item ms-auto align-middle">
+                <a class="nav-link align-content-center" href="/adminPanel">Admin Panel</a>
+            </li>
+            <li class="nav-item ms-auto align-middle">
                 <a class="nav-link align-content-center" href="/">Chat</a>
+            </li>
+            <li class="nav-item ms-auto align-middle">
+                <a class="nav-link align-content-center" href="/profile">Profile</a>
             </li>
         </ul>
 

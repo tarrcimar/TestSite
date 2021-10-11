@@ -1,6 +1,7 @@
 package com.thesis.testsite.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,11 @@ public class User {
     @GeneratedValue
     private Long id;
 
+    @Pattern(message="Type can contain alphanumeric characters only", regexp = "[a-zA-Z0-9 ]+")
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Pattern(message="Type can contain alphanumeric characters only", regexp = "[a-zA-Z0-9 ]+")
     @Column(nullable = false, unique = true)
     private String password;
 
@@ -26,7 +29,7 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<Message> messages;
 
-    public User(String username, String password, List<Message> messages) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.messages = messages;
