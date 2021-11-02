@@ -82,4 +82,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updatePassword(String userName, String password) {
         userRepository.changePassword(userName, password);
     }
+
 }

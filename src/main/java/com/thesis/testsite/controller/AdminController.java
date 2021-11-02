@@ -1,5 +1,6 @@
 package com.thesis.testsite.controller;
 
+import com.thesis.testsite.entity.User;
 import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,7 +23,6 @@ import java.nio.file.Paths;
 
 @Controller
 public class AdminController {
-
 
     private UserService userService;
 
@@ -51,10 +54,43 @@ public class AdminController {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document document1 = db.parse(tempFile);
-        System.out.println(document1.toString());
+        Document doc = db.parse(tempFile);
+        doc.getDocumentElement().normalize();
 
-        return "redirect:/adminPanel";
+        System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+        NodeList nList = doc.getElementsByTagName("user");
+        System.out.println("----------------------------");
+
+        System.out.println("Timer started!");
+        long start = System.currentTimeMillis();
+        boolean success = false;
+        for(int temp = 0; temp < nList.getLength(); temp++){
+            Node nNode = nList.item(temp);
+            System.out.println("Current element: " + nNode.getNodeName());
+            if(nNode.getNodeType() == Node.ELEMENT_NODE){
+                Element nElement = (Element) nNode;
+                String username = nElement.getElementsByTagName("username")
+                        .item(0).getTextContent();
+                String password = nElement.getElementsByTagName("password")
+                        .item(0).getTextContent();
+                String role = nElement.getElementsByTagName("role")
+                        .item(0).getTextContent();
+                System.out.println("Username : "
+                        + username);
+                System.out.println("Password : "
+                        + password);
+                System.out.println("Role : "
+                        + role);
+                userService.registerUser(new User(username, password, role));
+                if(temp == nList.getLength()) success = true;
+            }
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("Timer ended. Elapsed time: " + (end-start));
+
+        if (success)
+            return "redirect:/adminPanel?success=true";
+        return "redirect:/adminPanel?success=false";
     }
 
 }
