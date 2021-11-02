@@ -10,29 +10,37 @@ import java.util.List;
 public class User {
 
     private static final String ROLE_USER = "USER";
+    private static final String ROLE_ADMIN = "ADMIN";
 
     @Id
     @GeneratedValue
     private Long id;
 
+    @Lob
     @Pattern(message="Type can contain alphanumeric characters only", regexp = "[a-zA-Z0-9 ]+")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
+    @Lob
     @Pattern(message="Type can contain alphanumeric characters only", regexp = "[a-zA-Z0-9 ]+")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 2000)
     private String password;
 
-    private String role = ROLE_USER;
+    private String role;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Message> messages;
 
-    public User(String username, String password) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.messages = messages;
+        if(role.equals("admin")){
+            this.role = ROLE_ADMIN;
+        }
+        else
+            this.role = ROLE_USER;
     }
 
     public User() {
@@ -71,6 +79,14 @@ public class User {
 
     public String getRole() {
         return role;
+    }
+
+    public void setRole(String role) {
+        if(role.equals("admin")){
+            this.role = ROLE_ADMIN;
+        }
+        else
+            this.role = ROLE_USER;
     }
 
     public List<Message> getMessages() {

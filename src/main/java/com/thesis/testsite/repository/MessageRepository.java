@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface MessageRepository extends CrudRepository<Message, Long> {
+
     List<Message> findAll();
 
     @Modifying

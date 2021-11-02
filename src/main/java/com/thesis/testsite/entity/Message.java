@@ -11,7 +11,6 @@ public class Message {
     @GeneratedValue
     private Long id;
 
-    //j@Pattern(regexp = "[a-zA-Z0-9 ]+")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

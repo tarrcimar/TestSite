@@ -10,10 +10,11 @@ import java.util.List;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query(value = "select * from users where username = ?1", nativeQuery = true)
+    @Query(value = "SELECT u FROM User u WHERE u.username = ?1"/*, nativeQuery = true*/)
     User findByUsername(String username);
 
-    @Query(value = "select * from users where id = ?1", nativeQuery = true)
+    @Query(value = "select u from User u where u.id = ?1"/*, nativeQuery = true*/)
+    //select * from users where id = ?1
     User getUserByMessageId(Long id);
 
     List<User> findAll();

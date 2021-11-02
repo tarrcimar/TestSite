@@ -4,15 +4,10 @@ import com.thesis.testsite.entity.Message;
 import com.thesis.testsite.entity.User;
 import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.HtmlUtils;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -42,7 +37,7 @@ public class HomeController {
 
     @RequestMapping(value = "/msg", method = {RequestMethod.POST, RequestMethod.GET})
     public String addMessage(@RequestParam("content") String content, Principal principal){
-        content = content.replaceAll("[^a-zA-Z0-9]", " ");
+        //content = content.replaceAll("[^a-zA-Z0-9]", " ");
         userService.addNewMessage(principal.getName() ,content);
         return "redirect:/";
     }
@@ -50,11 +45,11 @@ public class HomeController {
     @PostMapping("/reg")
     public String registerUser(@RequestParam("username") String username, @RequestParam("password") String password,
                            @RequestParam("repeatPassword") String repeatPassword){
-        password = password.replaceAll("[^a-zA-Z0-9]", " ");
-        username = username.replaceAll("[^a-zA-Z0-9]", " ");
-        repeatPassword = repeatPassword.replaceAll("[^a-zA-Z0-9]", " ");
+        //password = password.replaceAll("[^a-zA-Z0-9]", " ");
+        //username = username.replaceAll("[^a-zA-Z0-9]", " ");
+        //repeatPassword = repeatPassword.replaceAll("[^a-zA-Z0-9]", " ");
         if(password.equals(repeatPassword)){
-            userService.registerUser(new User(username, password));
+            userService.registerUser(new User(username, password, "user"));
             return "redirect:/register?flag=true";
         }
 
