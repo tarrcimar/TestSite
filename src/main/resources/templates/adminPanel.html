@@ -46,8 +46,10 @@
                 <label class="form-label">Select XML file to upload</label>
                 <input type="file" name="fileToUpload" id="fileToUpload" class="form-control"></input>
             </div>
-            <div th:if="${(param != null) and (param.success != null) and (param.flag[0] == 'false')}" class="alert alert-warning">User not added</div>
-            <div th:if="${(param != null) and (param.flag != null) and (param.flag[0] == 'true')}" class="alert alert-success">User added</div>
+            <div th:if="${(param != null) and (param.success != null) and (param.flag[0] == 'false')}" class="alert alert-warning">User/Users not added</div>
+            <div th:if="${(param != null) and (param.flag != null) and (param.flag[0] == 'true')}" class="alert alert-success">User/Users added</div>
+            <div th:if="${(param != null) and (param.flag != null) and (param.flag[0] == '0')}" class="alert alert-success">A username does not match constraints.</div>
+            <div th:if="${(param != null) and (param.flag != null) and (param.flag[0] == '1')}" class="alert alert-success">A password does not match constraints.</div>
             <div class="mb-3">
                 <input type="submit" value="Upload" name="upload" class="btn btn-danger"></input>
             </div>

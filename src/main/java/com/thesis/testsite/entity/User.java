@@ -1,7 +1,8 @@
 package com.thesis.testsite.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +18,13 @@ public class User {
     private Long id;
 
     @Lob
-    @Pattern(message="Type can contain alphanumeric characters only", regexp = "[a-zA-Z0-9 ]+")
     @Column(nullable = false)
+    @Length(min = 5, max = 10)
     private String username;
 
     @Lob
-    @Pattern(message="Type can contain alphanumeric characters only", regexp = "[a-zA-Z0-9 ]+")
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = false)
+    @Length(min = 8, max = 20)
     private String password;
 
     private String role;

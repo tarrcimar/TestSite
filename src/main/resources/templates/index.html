@@ -43,8 +43,8 @@
         <div style="width: 40%; height: 40rem;overflow-y: scroll;display: flex; flex-direction: column-reverse; margin: 1rem auto auto;">
             <div style="height: auto; background-color: white;" class="form-group">
                 <div th:each = "message: ${messages}" name="chatActivity" id="screen" style="border-color: darkolivegreen;background-color: silver; resize: none; height: auto; margin-top: 1rem; margin-bottom: 1rem" class="form-control">
-                    <h5 th:utext="${message.user.username}" style="color: blue"></h5>
-                    <small th:utext = "${message.content}"></small>
+                    <h5 th:text="${message.user.username}" style="color: blue"></h5>
+                    <small th:text = "${message.content}"></small>
                     <div sec:authorize = "hasAuthority('ADMIN')"><a style="color:red;" th:href="@{/deleteMessage/{messageId}(messageId = ${message.id})}">Delete Message</a></div>
                 </div>
             </div>

@@ -2,6 +2,7 @@ package com.thesis.testsite.controller;
 
 import com.thesis.testsite.entity.Message;
 import com.thesis.testsite.entity.User;
+import com.thesis.testsite.service.RegexService;
 import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,13 @@ import java.util.List;
 
 @Controller
 public class HomeController {
+
+    private RegexService regexService;
+
+    @Autowired
+    public void setRegexService(RegexService regexService) {
+        this.regexService = regexService;
+    }
 
     private UserService userService;
 
@@ -45,16 +53,19 @@ public class HomeController {
     @PostMapping("/reg")
     public String registerUser(@RequestParam("username") String username, @RequestParam("password") String password,
                            @RequestParam("repeatPassword") String repeatPassword){
-        //password = password.replaceAll("[^a-zA-Z0-9]", " ");
-        //username = username.replaceAll("[^a-zA-Z0-9]", " ");
-        //repeatPassword = repeatPassword.replaceAll("[^a-zA-Z0-9]", " ");
+
+        if(!regexService.isValidUsername(username)) return "redirect:/register?flag=1";
+
         if(password.equals(repeatPassword)){
-            userService.registerUser(new User(username, password, "user"));
-            return "redirect:/register?flag=true";
+            if(regexService.isValidPassword(password)){
+                userService.registerUser(new User(username, password, "user"));
+                return "redirect:/register?flag=true";
+            }
+            else
+                return "redirect:/register?flag=0";
         }
 
         return "redirect:/register?flag=false";
-
     }
 
 }

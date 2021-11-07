@@ -1,5 +1,6 @@
 package com.thesis.testsite.controller;
 
+import com.thesis.testsite.service.RegexService;
 import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class UserController {
@@ -35,6 +38,7 @@ public class UserController {
         }
 
         return "redirect:/profile?flag=false";
-
     }
+
+
 }
