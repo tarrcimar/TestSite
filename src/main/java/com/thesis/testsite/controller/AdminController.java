@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -54,6 +55,9 @@ public class AdminController {
     @RequestMapping(path = "/upload", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String upload(@RequestParam("fileToUpload") MultipartFile document) throws IOException, ParserConfigurationException, SAXException {
         File tempFile = File.createTempFile("valami", ".xml");
+        Path path = Paths.get(String.valueOf(tempFile));
+        long size = Files.size(path);
+        System.out.println("A fájl mérete: " + size);
         tempFile.deleteOnExit();
         document.transferTo(tempFile);
         System.out.println("transfered");
