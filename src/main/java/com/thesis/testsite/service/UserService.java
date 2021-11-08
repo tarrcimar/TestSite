@@ -23,5 +23,11 @@ public interface UserService {
 
     void updatePassword(String userName, String password);
 
+    void increaseAttempts(User user);
+
+    void resetFailedAttempts(String username);
+
+    void lock(User user);
+
 
 }

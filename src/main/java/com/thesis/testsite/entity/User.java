@@ -29,6 +29,28 @@ public class User {
 
     private String role;
 
+    public boolean isAccount_non_locked() {
+        return account_non_locked;
+    }
+
+    public void setAccount_non_locked(boolean account_non_locked) {
+        this.account_non_locked = account_non_locked;
+    }
+
+    public int getFailedAttempt() {
+        return failedAttempt;
+    }
+
+    public void setFailedAttempt(int failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
+
+    @Column(name = "account_non_locked")
+    private boolean account_non_locked;
+
+    @Column(name = "failed_attempt")
+    private int failedAttempt;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Message> messages;
@@ -42,6 +64,8 @@ public class User {
         }
         else
             this.role = ROLE_USER;
+        this.failedAttempt = 0;
+        this.account_non_locked = true;
     }
 
     public User() {

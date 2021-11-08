@@ -23,4 +23,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Transactional
     @Query(value = "update users set password = ?2 where username = ?1", nativeQuery = true)
     void changePassword(String userName, String password);
+
+
+    @Modifying
+    @Transactional
+    @Query(value = "update users set failed_attempt = ?1 where username = ?2", nativeQuery = true)
+    void updateFailedAttempts(int failAttempts, String username);
 }

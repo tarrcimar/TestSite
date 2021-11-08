@@ -14,6 +14,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 public class SecurityConf extends WebSecurityConfigurerAdapter {
 
+
+    private CustomLoginFailureHandler loginFailureHandler;
+
+    @Autowired
+    public void setLoginFailureHandler(CustomLoginFailureHandler loginFailureHandler) {
+        this.loginFailureHandler = loginFailureHandler;
+    }
+
+    private CustomLoginSuccessHandler loginSuccessHandler;
+
+    @Autowired
+    public void setLoginSuccessHandler(CustomLoginSuccessHandler loginSuccessHandler) {
+        this.loginSuccessHandler = loginSuccessHandler;
+    }
+
     @Autowired
     private UserDetailsService userService;
 
@@ -29,11 +44,16 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/register").permitAll()
                 .antMatchers("/reg").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/login?error").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                    .loginPage("/login")
+                    .usernameParameter("username")
+                    .failureHandler(loginFailureHandler)
+                    .successHandler(loginSuccessHandler)
+                    .permitAll()
                 .and()
                 .logout()
                 .logoutSuccessUrl("/login?logout")

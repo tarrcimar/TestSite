@@ -15,6 +15,8 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
+    public static final int MAX_FAILED_ATTEMPTS = 3;
+
     private UserRepository userRepository;
     private MessageRepository messageRepository;
 
@@ -82,5 +84,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updatePassword(String userName, String password) {
         userRepository.changePassword(userName, password);
     }
+
+    @Override
+    public void increaseAttempts(User user) {
+        int newFailAttempt = user.getFailedAttempt() + 1;
+        System.out.println("new Fail Attempts: " + newFailAttempt);
+        userRepository.updateFailedAttempts(newFailAttempt, user.getUsername());
+    }
+
+    @Override
+    public void resetFailedAttempts(String username) {
+        userRepository.updateFailedAttempts(0, username);
+    }
+
+    @Override
+    public void lock(User user) {
+        user.setAccount_non_locked(false);
+        userRepository.save(user);
+    }
+
 
 }
