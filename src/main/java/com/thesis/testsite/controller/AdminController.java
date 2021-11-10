@@ -6,6 +6,7 @@ import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
@@ -22,9 +23,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 
 @Controller
 public class AdminController {
+
+    private static final long FIRST_UPLOAD_TIME = System.currentTimeMillis();
 
     private RegexService regexService;
 
@@ -48,21 +52,25 @@ public class AdminController {
     }
 
     @RequestMapping("/adminPanel")
-    public String adminPanel(){
+    public String adminPanel(Model model, Principal principal){
+        User user = userService.findByUsername(principal.getName());
+        model.addAttribute("adminUser", user);
         return "adminPanel";
     }
 
     @RequestMapping(path = "/upload", method = RequestMethod.POST, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public String upload(@RequestParam("fileToUpload") MultipartFile document) throws IOException, ParserConfigurationException, SAXException {
+    public String upload(@RequestParam("fileToUpload") MultipartFile document, Principal principal) throws IOException, ParserConfigurationException, SAXException {
+        System.out.println("TIME: " + FIRST_UPLOAD_TIME);
+        User user = userService.findByUsername(principal.getName());
+        userService.increaseAttempts(user);
+        if (user.getFailedAttempt() > 4 || !user.isAccount_non_locked()) userService.lock(user);
+        if(document.getSize() > 800){
+            if(user.isAccount_non_locked()) userService.lock(user);
+            return "redirect:/adminPanel?success=2";
+        }
         File tempFile = File.createTempFile("valami", ".xml");
-        Path path = Paths.get(String.valueOf(tempFile));
-        long size = Files.size(path);
-        System.out.println("A fájl mérete: " + size);
         tempFile.deleteOnExit();
         document.transferTo(tempFile);
-        System.out.println("transfered");
-        System.out.println(document);
-        System.out.println(tempFile);
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
@@ -75,8 +83,8 @@ public class AdminController {
         NodeList nList = doc.getElementsByTagName("user");
         System.out.println("----------------------------");
 
-        System.out.println("Timer started!");
-        long start = System.currentTimeMillis();
+        //System.out.println("Timer started!");
+        //long start = System.currentTimeMillis();
         boolean success = false;
         for(int temp = 0; temp < nList.getLength(); temp++){
             Node nNode = nList.item(temp);
@@ -89,6 +97,7 @@ public class AdminController {
                         .item(0).getTextContent();
                 String role = nElement.getElementsByTagName("role")
                         .item(0).getTextContent();
+                if(username == null || password == null) return "redirect:/adminPanel?success=0";
                 if(!regexService.isValidUsername(username)) return "redirect:/adminPanel?success=0";
                 if(!regexService.isValidPassword(password)) return "redirect:/adminPanel?success=1";
                 System.out.println("Username : "
@@ -97,12 +106,12 @@ public class AdminController {
                         + password);
                 System.out.println("Role : "
                         + role);
-                userService.registerUser(new User(username, password, role));
+                userService.registerUser(username, password, role);
                 if(temp == nList.getLength()) success = true;
             }
         }
-        long end = System.currentTimeMillis();
-        System.out.println("Timer ended. Elapsed time: " + (end-start));
+        //long end = System.currentTimeMillis();
+        //System.out.println("Timer ended. Elapsed time: " + (end-start));
 
         if (success)
             return "redirect:/adminPanel?success=true";

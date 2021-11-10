@@ -5,9 +5,12 @@ import com.thesis.testsite.entity.User;
 import com.thesis.testsite.repository.MessageRepository;
 import com.thesis.testsite.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +22,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
     private MessageRepository messageRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -49,7 +60,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void registerUser(User user) {
+    public void registerUser(String username, String password, String role) {
+        User user = new User(username, passwordEncoder.encode(password), role);
         userRepository.save(user);
     }
 
@@ -82,6 +94,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updatePassword(String userName, String password) {
+
+        password = passwordEncoder.encode(password);
         userRepository.changePassword(userName, password);
     }
 

@@ -58,7 +58,7 @@ public class HomeController {
 
         if(password.equals(repeatPassword)){
             if(regexService.isValidPassword(password)){
-                userService.registerUser(new User(username, password, "user"));
+                userService.registerUser(username, password, "user");
                 return "redirect:/register?flag=true";
             }
             else

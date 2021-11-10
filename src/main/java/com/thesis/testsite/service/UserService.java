@@ -9,7 +9,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void registerUser(User user);
+    void registerUser(String username, String password, String role);
 
     List<Message> getMessages();
 

@@ -24,7 +24,7 @@ public class User {
 
     @Lob
     @Column(nullable = false)
-    @Length(min = 8, max = 20)
+    @Length(min = 8, max = 61)
     private String password;
 
     private String role;
