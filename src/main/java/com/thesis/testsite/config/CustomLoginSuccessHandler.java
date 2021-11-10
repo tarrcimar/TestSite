@@ -1,6 +1,7 @@
 package com.thesis.testsite.config;
 
 import com.thesis.testsite.entity.User;
+import com.thesis.testsite.service.LogService;
 import com.thesis.testsite.service.UserDetailsImpl;
 import com.thesis.testsite.service.UserService;
 import com.thesis.testsite.service.UserServiceImpl;
@@ -31,6 +32,13 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         this.userServiceImpl = userServiceImpl;
     }
 
+    private LogService logService;
+
+    @Autowired
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         System.out.println("SUCCESS");
@@ -42,7 +50,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             userService.resetFailedAttempts(user.getUsername());
         }
 
-
+        logService.createLog("User: " + username + " login success.", "INFO");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

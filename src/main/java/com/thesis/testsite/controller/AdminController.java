@@ -1,6 +1,7 @@
 package com.thesis.testsite.controller;
 
 import com.thesis.testsite.entity.User;
+import com.thesis.testsite.service.LogService;
 import com.thesis.testsite.service.RegexService;
 import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +45,18 @@ public class AdminController {
         this.userService = userService;
     }
 
+    private LogService logService;
+
+    @Autowired
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
     @RequestMapping("/deleteMessage/{messageId}")
     public String deleteMessage(@PathVariable(value = "messageId") Long messageId){
         System.out.println("Id: " + messageId);
         userService.deleteMessage(messageId);
+        logService.createLog("Admin deleted message.", "WARN");
         return "redirect:/";
     }
 
@@ -63,8 +72,14 @@ public class AdminController {
         System.out.println("TIME: " + FIRST_UPLOAD_TIME);
         User user = userService.findByUsername(principal.getName());
         userService.increaseAttempts(user);
-        if (user.getFailedAttempt() > 4 || !user.isAccount_non_locked()) userService.lock(user);
+        if (user.getFailedAttempt() > 4 || !user.isAccount_non_locked()){
+            userService.lock(user);
+            logService.createLog("User: " + principal.getName() +
+                            " exceeded the file upload attempts. Account locked.",
+                    "WARN");
+        }
         if(document.getSize() > 800){
+            logService.createLog("User: " + principal.getName() + " exceeded the file upload limit.", "WARN");
             if(user.isAccount_non_locked()) userService.lock(user);
             return "redirect:/adminPanel?success=2";
         }
@@ -98,8 +113,16 @@ public class AdminController {
                 String role = nElement.getElementsByTagName("role")
                         .item(0).getTextContent();
                 if(username == null || password == null) return "redirect:/adminPanel?success=0";
-                if(!regexService.isValidUsername(username)) return "redirect:/adminPanel?success=0";
-                if(!regexService.isValidPassword(password)) return "redirect:/adminPanel?success=1";
+                if(!regexService.isValidUsername(username)){
+                    logService.createLog("User: " + username +
+                            " has not been added due to violation of username constraints.", "WARN");
+                    return "redirect:/adminPanel?success=0";
+                }
+                if(!regexService.isValidPassword(password)){
+                    logService.createLog("User: " + username +
+                            " has not been added due to violation of password constraints.", "WARN");
+                    return "redirect:/adminPanel?success=1";
+                }
                 System.out.println("Username : "
                         + username);
                 System.out.println("Password : "
@@ -107,14 +130,17 @@ public class AdminController {
                 System.out.println("Role : "
                         + role);
                 userService.registerUser(username, password, role);
+                logService.createLog("User: " + username + " added as: " + role, "INFO");
                 if(temp == nList.getLength()) success = true;
             }
         }
         //long end = System.currentTimeMillis();
         //System.out.println("Timer ended. Elapsed time: " + (end-start));
 
-        if (success)
+        if (success){
+            logService.createLog("Adding all users from XML file encountered an error.", "WARN");
             return "redirect:/adminPanel?success=true";
+        }
         return "redirect:/adminPanel?success=false";
     }
 

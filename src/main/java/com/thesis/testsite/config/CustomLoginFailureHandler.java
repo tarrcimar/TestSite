@@ -1,8 +1,11 @@
 package com.thesis.testsite.config;
 
 import com.thesis.testsite.entity.User;
+import com.thesis.testsite.service.LogService;
 import com.thesis.testsite.service.UserService;
 import com.thesis.testsite.service.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -33,6 +36,13 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
         this.userServiceImpl = userServiceImpl;
     }
 
+    private LogService logService;
+
+    @Autowired
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         System.out.println("FAILURE");
@@ -54,8 +64,8 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
             }
         }
 
+        logService.createLog("User: " + username + " login failed.", "WARN");
         super.setDefaultFailureUrl("/login?error");
-        System.out.println(exception);
         super.onAuthenticationFailure(request, response, exception);
     }
 }

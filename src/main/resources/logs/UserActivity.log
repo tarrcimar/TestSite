@@ -1,0 +1,8 @@
+nov. 10, 2021 8:53:05 DU com.thesis.testsite.service.LogService createLog
+INFO: User registered: admin2
+nov. 10, 2021 8:53:12 DU com.thesis.testsite.service.LogService createLog
+INFO: User: admin2 login success.
+nov. 10, 2021 8:53:15 DU com.thesis.testsite.service.LogService createLog
+INFO: User: admin2sent a new message.
+nov. 10, 2021 8:53:18 DU com.thesis.testsite.service.LogService createLog
+WARNING: User: admin2 login failed.

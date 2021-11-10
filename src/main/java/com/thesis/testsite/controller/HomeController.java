@@ -2,6 +2,7 @@ package com.thesis.testsite.controller;
 
 import com.thesis.testsite.entity.Message;
 import com.thesis.testsite.entity.User;
+import com.thesis.testsite.service.LogService;
 import com.thesis.testsite.service.RegexService;
 import com.thesis.testsite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,13 @@ public class HomeController {
         this.userService = userService;
     }
 
+    private LogService logService;
+
+    @Autowired
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
+
     @RequestMapping("/")
     public String home(Model model){
         List<Message> messages = userService.getMessages();
@@ -47,6 +55,7 @@ public class HomeController {
     public String addMessage(@RequestParam("content") String content, Principal principal){
         //content = content.replaceAll("[^a-zA-Z0-9]", " ");
         userService.addNewMessage(principal.getName() ,content);
+        logService.createLog("User: " + principal.getName() + "sent a new message.", "INFO");
         return "redirect:/";
     }
 
@@ -59,12 +68,14 @@ public class HomeController {
         if(password.equals(repeatPassword)){
             if(regexService.isValidPassword(password)){
                 userService.registerUser(username, password, "user");
+                logService.createLog("User registered: " + username, "INFO");
                 return "redirect:/register?flag=true";
             }
             else
                 return "redirect:/register?flag=0";
         }
 
+        logService.createLog("User registration failed: " + username, "WARN");
         return "redirect:/register?flag=false";
     }
 
