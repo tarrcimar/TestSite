@@ -8,6 +8,7 @@ public class TestSiteApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TestSiteApplication.class, args);
+        System.out.println("fassssz");
     }
 
 }
