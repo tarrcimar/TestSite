@@ -33,7 +33,6 @@ public class AdminController {
 
     @RequestMapping("/deleteMessage/{messageId}")
     public String deleteMessage(@PathVariable(value = "messageId") Long messageId){
-        System.out.println("Id: " + messageId);
         userService.deleteMessage(messageId);
         return "redirect:/";
     }
